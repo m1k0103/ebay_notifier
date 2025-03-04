@@ -9,6 +9,13 @@ import yaml
 def get_random_proxy():
 	pass
 
+def get_max_price():
+	with open("config.yml") as cfg:
+		return yaml.safe_load(cfg)["max_price"]
+
+def get_delay():
+	with open("config.yml") as cfg:
+		return yaml.safe_load(cfg)["delay"]
 
 def get_info(url):
 	#sends request and turns into soup
@@ -24,7 +31,7 @@ def get_info(url):
 
 	#print(str(all_li), "\n\n\n")
 	#print(str(all_li[0]))
-	print(len(all_li))
+	#print(len(all_li))
 	return all_li
 
 
@@ -112,7 +119,6 @@ def check_changes(new_data, old_data):
 		#new_ids = {item['id'] for item in sorted_new}
 
 		added_items = [item for item in sorted_new if item['id'] not in old_ids]
-		print("\nAdded Items:")
 
 		new_listings = []
 		for item in added_items:
@@ -121,7 +127,7 @@ def check_changes(new_data, old_data):
 		return new_listings
 
 def main():
-	raw_product_data = [str(i) for i in get_info("https://www.ebay.co.uk/sch/i.html?_nkw=nintendo+ds+lite&_sacat=0&LH_BO=1")]
+	raw_product_data = [str(i) for i in get_info("https://www.ebay.co.uk/sch/i.html?_nkw=nintendo+ds+lite&LH_BO=1&_ipg=120")]
 	
 	with Pool(cpu_count()) as p:
 		product_data = p.map(get_listing_details, raw_product_data)
@@ -131,14 +137,29 @@ def main():
 	# main loop
 	print("[+] Starting main check loop.")
 	while True:
-		new_raw_product_data = [str(i) for i in get_info("https://www.ebay.co.uk/sch/i.html?_nkw=nintendo+ds+lite&_sacat=0&LH_BO=1")]
+		new_raw_product_data = [str(i) for i in get_info("https://www.ebay.co.uk/sch/i.html?_nkw=nintendo+ds+lite&LH_BO=1&_ipg=120")]
 		with Pool(cpu_count()) as p:
 			new_product_data = p.map(get_listing_details, new_raw_product_data)
 
 		new_listings = check_changes(new_product_data, product_data)
+		
+		# if changes detected, this executes
 		if new_listings:
-			# if changes detected, this executes
-			send_notification(new_listings)
+			max_price = get_max_price()
+			to_notify_about = []
+			for l in new_listings:
+				if float(l["price"][1:]) <= max_price:
+					to_notify_about.append(l)
+					print("[-] A new listing didnt meet the price requirement.")
 
-		product_data = new_listings
-		time.sleep(60) # after the 60 seconds,it spams messages. i dont know why.
+			send_notification(to_notify_about)
+		else:
+			print("[+] No new listings detected.")
+
+		# sets the new data to be the current data. the new_listings will hten be 
+		product_data = new_product_data
+		
+		#gets the delay from config, then waits that amount before doing the whole cycle again
+		delay = get_delay()
+		print(f"[!] Waiting {delay} minutes.")
+		time.sleep(60 * delay)
