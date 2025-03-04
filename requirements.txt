@@ -2,5 +2,3 @@ pyyaml
 requests
 bs4
 html-parser
-sqlite3
-
