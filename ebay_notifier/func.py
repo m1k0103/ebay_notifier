@@ -125,3 +125,8 @@ def check_changes(new_data, old_data):
                         new_listings.append(item)
 
                 return new_listings
+
+def get_watchlist():
+	with open("config.yml") as cfg:
+		contents = yaml.safe_load(cfg)
+	return contents["watchlist"]
