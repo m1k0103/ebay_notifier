@@ -5,16 +5,58 @@ from multiprocessing import Pool, cpu_count
 import time
 from urllib.parse import urlparse
 import yaml
-from ebay_notifier.func import get_random_proxy, get_max_price, get_delay, get_info, get_listing_details, send_notification, find_list_difference, check_changes
+from ebay_notifier.func import get_random_proxy, get_max_price, get_delay, get_info, get_listing_details, send_notification, find_list_difference, check_changes, get_watchlist
+
 
 
 def main():
-	raw_product_data = [str(i) for i in get_info("https://www.ebay.co.uk/sch/i.html?_nkw=nintendo+ds+lite&LH_BO=1&_ipg=120")]
-	
-	with Pool(cpu_count()) as p:
-		product_data = p.map(get_listing_details, raw_product_data)
-	
-	print("[+] Finished getting the listings from the initial page.")
+	product_data = []
+
+	watchlist = get_watchlist()
+	for i in range(len(watchlist)):
+		raw_product_data = [str(i) for i in get_info(watchlist[i]["url"])]
+		with Pool(cpu_count()) as p:
+			product_data.append(p.map(get_listing_details, raw_product_data))
+
+	print("[+] Finished getting the initial listings from watchlist pages.")
+
+
+	#main loop
+	print("[+] Starting main check loop.")
+	while True:
+		for i in range(len(product_data)):
+			new_raw_product_data = [str(i) for i in get_info(watchlist[i]["url"])]
+			with Pool(cpu_count()) as p:
+				new_product_data = p.map(get_listing_details, new_raw_product_data)
+
+			new_listings = check_changes(new_product_data, product_data[i])
+
+			if new_listings:
+				max_price = watchlist[i]["max_price"]
+				to_notify_about = []
+				for l in new_listings:
+					if float(l["price"][1:]) <= max_price:
+						to_notify_about.append(l)
+						print("[-] A new listing didnt meet the price requirement.")
+			else:
+				print("[+] No new listings detected.")
+
+			product_data[i] = new_product_data
+		
+
+		#gets the delay from config, then waits that amount before doing the whole cycle again
+		delay = get_delay()
+		print(f"[!] Waiting {delay} minutes.")
+		time.sleep(60 * delay)
+
+
+
+	#raw_product_data = [str(i) for i in get_info("https://www.ebay.co.uk/sch/i.html?_nkw=nintendo+ds+lite&LH_BO=1&_ipg=120")]
+	#
+	#with Pool(cpu_count()) as p:
+	#	product_data = p.map(get_listing_details, raw_product_data)
+	#
+	#print("[+] Finished getting the listings from the initial pages.")
 
 	# main loop
 	print("[+] Starting main check loop.")
