@@ -38,6 +38,8 @@ def main():
 					if float(l["price"][1:]) <= max_price:
 						to_notify_about.append(l)
 						print("[-] A new listing didnt meet the price requirement.")
+				
+				send_notification(to_notify_about)
 			else:
 				print("[+] No new listings detected.")
 
