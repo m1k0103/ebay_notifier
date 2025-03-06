@@ -99,7 +99,7 @@ def send_notification(listings):
                 # Link
                 # Thumbnail
                 for item in listings:
-                        message = f"""{item['title']}\n\nPrice: {item['price']}\nShipping: {item['shipping_fee']}\nOffers enabled: {item['best_offers']}\n{item['thumbnail']}\n\n{item['url']}"""
+                        message = f"""{item['title']}\n\nPrice: {item['price']}\nShipping: {item['shipping_fee']}\nOffers enabled: {item['best_offers']}\nImage: {item['thumbnail']}\n\nUrl: {item['url']}"""
                         url = f"https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={channel_id}&text={message}"
                         
                         #checks if any proxies

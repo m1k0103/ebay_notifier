@@ -35,10 +35,14 @@ def main():
 						print("[-] A new listing didnt meet the price requirement.")
 				
 				send_notification(to_notify_about)
+
+				# the stored data is ONLY updated if there are mew listings. this prevents listings 
+				product_data[i] = new_product_data
+
 			else:
 				print("[+] No new listings detected.")
 
-			product_data[i] = new_product_data
+			
 		
 
 		#gets the delay from config, then waits that amount before doing the whole cycle again
