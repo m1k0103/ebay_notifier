@@ -1,13 +1,15 @@
 import yaml
-import os
 from bs4 import BeautifulSoup
 import requests
 import re
 from urllib.parse import urlparse
+import random
 
 
 def get_random_proxy():
-        pass
+        with open("proxies.txt", "r") as pr:
+                content = pr.readlines()
+                return random.choice(content)
 
 def get_max_price():
         with open("config.yml") as cfg:
@@ -18,8 +20,14 @@ def get_delay():
                 return yaml.safe_load(cfg)["delay"]
 
 def get_info(url):
-        #sends request and turns into soup
-        r = requests.get(url)
+        #checks if proxy
+        proxy = get_random_proxy()
+        if proxy:
+                r = requests.get(url, proxies={"http":proxy, "https":proxy})
+        else:
+                r = requests.get(url)
+        
+        #turns content into soup
         soup = BeautifulSoup(r.text, "html.parser")
 
         # regex to be used to identify the products
@@ -88,25 +96,19 @@ def send_notification(listings):
                 # Thumbnail
                 for item in listings:
                         message = f"""{item['title']}\n\nPrice: {item['price']}\nShipping: {item['shipping_fee']}\nOffers enabled: {item['best_offers']}\n{item['thumbnail']}\n\n{item['url']}"""
-
                         url = f"https://api.telegram.org/bot{bot_token}/sendMessage?chat_id={channel_id}&text={message}"
-                        resp = requests.get(url)
+                        
+                        #checks if any proxies
+                        proxy = get_random_proxy()
+                        if proxy:
+                                resp = requests.get(url, proxies={"http":proxy, "https":proxy})
+                        else:
+                                resp = requests.get(url)
 
                         if resp.ok:
                                 print("[+] New listing. Sent notification.")
                         else:
                                 print("[-] Failed to send notification.")
-
-
-
-#essencially l1 - l2
-def find_list_difference(l1,l2):
-        result=[]
-        for i in l1:
-                if i not in l2:
-                        result.append(i)
-        return result
-
 
 
 def check_changes(new_data, old_data):
