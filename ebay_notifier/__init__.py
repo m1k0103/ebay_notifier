@@ -4,7 +4,15 @@ def start():
 	# creates config file
 	if "config.yml" not in os.listdir():
 		with open("config.yml", "w+") as cfg:
-			cfg.write("""telegram_bot_token: \ntelegram_channel_id: \nmax_price: \ndelay: # minutes""")
+			cfg.write("""telegram_bot_token: \n
+			telegram_channel_id: \n
+			delay: # minutes\n
+			watchlist: [\n
+				{
+				url: "",
+			 	max_price:  # e.g. £10.00 would be 10.00
+			 	}
+			]""")
 		print("[+] Config created.")
 
 	#runs main
