@@ -15,6 +15,12 @@ def start():
 			]""")
 		print("[+] Config created.")
 
+	#creates proxy file
+	if "proxies.txt" not in os.listdir():
+		with open("proxies.txt", "w+") as f:
+			pass
+		print("[+] Proxy file created.")
+
 	#runs main
 	from ebay_notifier.main import main
 	main()
