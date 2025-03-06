@@ -1,11 +1,6 @@
-import requests
-from bs4 import BeautifulSoup
-import re
 from multiprocessing import Pool, cpu_count
 import time
-from urllib.parse import urlparse
-import yaml
-from ebay_notifier.func import get_random_proxy, get_max_price, get_delay, get_info, get_listing_details, send_notification, find_list_difference, check_changes, get_watchlist
+from ebay_notifier.func import get_max_price, get_delay, get_info, get_listing_details, send_notification, check_changes, get_watchlist
 
 
 
