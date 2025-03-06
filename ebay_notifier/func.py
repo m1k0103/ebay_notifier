@@ -9,7 +9,11 @@ import random
 def get_random_proxy():
         with open("proxies.txt", "r") as pr:
                 content = pr.readlines()
-                return random.choice(content)
+                if content:
+                        return random.choice(content)
+                else:
+                        return None
+
 
 def get_max_price():
         with open("config.yml") as cfg:
