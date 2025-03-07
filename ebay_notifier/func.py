@@ -15,9 +15,9 @@ def get_random_proxy():
                         return None
 
 
-def get_max_price():
+def get_max_price(i):
         with open("config.yml") as cfg:
-                return yaml.safe_load(cfg)["max_price"]
+                return yaml.safe_load(cfg)["watchlist"][i]["max_price"]
 
 def get_delay():
         with open("config.yml") as cfg:

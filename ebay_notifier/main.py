@@ -27,7 +27,7 @@ def main():
 			new_listings = check_changes(new_product_data, product_data[i])
 
 			if new_listings:
-				max_price = get_max_price()
+				max_price = get_max_price(i)
 				to_notify_about = []
 				for l in new_listings:
 					if float(l["price"][1:]) <= max_price and l["id"] not in get_already_searched():
