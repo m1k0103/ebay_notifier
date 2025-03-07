@@ -1,6 +1,6 @@
 from multiprocessing import Pool, cpu_count
 import time
-from ebay_notifier.func import get_max_price, get_delay, get_info, get_listing_details, send_notification, check_changes, get_watchlist
+from ebay_notifier.func import get_max_price, get_delay, get_info, get_listing_details, send_notification, check_changes, get_watchlist, get_already_searched, add_to_searched
 
 
 
@@ -73,9 +73,10 @@ def main():
 			max_price = get_max_price()
 			to_notify_about = []
 			for l in new_listings:
-				if float(l["price"][1:]) <= max_price:
+				if float(l["price"][1:]) <= max_price and l["id"] not in get_already_searched():
 					to_notify_about.append(l)
-					print("[-] A new listing didnt meet the price requirement.")
+					print("[+] A listing is within the price critical region.")
+					add_to_searched(l["id"])
 
 			send_notification(to_notify_about)
 		else:
