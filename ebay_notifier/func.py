@@ -7,7 +7,7 @@ import random
 
 
 def get_random_proxy():
-        with open("proxies.txt", "r") as pr:
+        with open("ebay_notifier/resources/proxies.txt", "r") as pr:
                 content = pr.readlines()
                 if content:
                         return random.choice(content)
@@ -136,3 +136,13 @@ def get_watchlist():
 	with open("config.yml") as cfg:
 		contents = yaml.safe_load(cfg)
 	return contents["watchlist"]
+
+# gets the ids of the listings that have already been searched. they will be excluded
+def get_already_searched():
+	with open("ebay_notifier/resources/searched.txt", "r") as s:
+		return list(s.readlines())
+
+# adds to the list of the ids that have already been searched
+def add_to_searched(id):
+	with open("ebay_notifier/resources/searched.txt", "a") as s:
+		s.write(f"{id}\n")
