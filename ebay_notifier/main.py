@@ -30,7 +30,7 @@ def main():
 				max_price = get_max_price(i)
 				to_notify_about = []
 				for l in new_listings:
-					if float(l["price"][1:]) <= max_price and l["id"] not in get_already_searched():
+					if (float(l["price"][1:]) <= max_price) and (l["id"] not in get_already_searched()):
 						to_notify_about.append(l)
 						print("[+] A listing is within the price critical region.")
 						add_to_searched(l["id"])

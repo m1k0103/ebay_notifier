@@ -140,7 +140,8 @@ def get_watchlist():
 # gets the ids of the listings that have already been searched. they will be excluded
 def get_already_searched():
 	with open("ebay_notifier/resources/searched.txt", "r") as s:
-		return list(s.readlines())
+                contents = list(s.readlines())
+                return [i.strip("\n") for i in contents]
 
 # adds to the list of the ids that have already been searched
 def add_to_searched(id):
