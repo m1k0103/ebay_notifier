@@ -20,7 +20,7 @@ def start():
 
 	#creates searched file
 	if "searched.txt" not in os.listdir("ebay_notifier/resources"):
-		with open("ebay_notifier/resources/resources.txt", "w+") as f:
+		with open("ebay_notifier/resources/searched.txt", "w+") as f:
 			print("[+] Searched file created.")
 
 	#runs main
