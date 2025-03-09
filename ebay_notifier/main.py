@@ -1,8 +1,10 @@
+import logging.config
 from multiprocessing import Pool, cpu_count
 import time
 from ebay_notifier.func import get_max_price, get_delay, get_info, get_listing_details, send_notification, check_changes, get_watchlist, get_already_searched, add_to_searched
+import logging
 
-
+logging.basicConfig(encoding='utf-8', level=logging.INFO)
 
 def main():
 	product_data = []

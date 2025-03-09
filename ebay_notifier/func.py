@@ -4,7 +4,9 @@ import requests
 import re
 from urllib.parse import urlparse
 import random
+import logging
 
+log = logging.getLogger(__name__)
 
 def get_random_proxy():
         with open("ebay_notifier/resources/proxies.txt", "r") as pr:
@@ -51,8 +53,13 @@ def get_info(url):
 def get_listing_details(listing):
         listing = str(listing)
         listing_soup = BeautifulSoup(listing, "html.parser")
-
-        listing_url = urlparse(listing_soup.find("a", {"class":"s-item__link"})["href"])._replace(query="").geturl()
+        
+        #log.info(str(listing_soup.find("a", {"class":"s-item__link"})) + "\n\n")
+        try:
+                listing_url = urlparse(listing_soup.find("a", {"class":"s-item__link"})["href"])._replace(query="").geturl()
+        except TypeError as e:
+                log.error(e)
+                listing_url = listing_soup.find("a", {"class":"s-item__link"})["href"]
 
         listing_id = urlparse(listing_url)[2].split("/")[2]
         listing_price = listing_soup.find("span", {"class":"s-item__price"}).text
