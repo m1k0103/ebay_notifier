@@ -60,13 +60,17 @@ def get_listing_details(listing):
         except TypeError as e:
                 log.error(e)
                 listing_url = listing_soup.find("a", {"class":"s-item__link"})["href"]
-
+        
         listing_id = urlparse(listing_url)[2].split("/")[2]
         listing_price = listing_soup.find("span", {"class":"s-item__price"}).text
         listing_title = listing_soup.find("div", {"class":"s-item__title"}).text
 
         thumbnail_regex = re.compile('.*i.ebayimg.com.*')
-        listing_thumbnail = listing_soup.find("img", {"src":thumbnail_regex})["src"]
+        try:
+                listing_thumbnail = listing_soup.find("img", {"src":thumbnail_regex})["src"]
+        except TypeError as e:
+                log.error(e)
+                listing_thumbnail = "No image found."
 
         try:
                 listing_shipping_fee = listing_soup.find("span", {"class":"s-item__dynamic s-item__paidDeliveryInfo"}).text
