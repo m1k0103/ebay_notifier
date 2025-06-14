@@ -11,5 +11,5 @@ A messy script which notifies you of new Ebay listings, and sends the listing de
 5) Run the `autorun.sh` file.
 6) Success!!
 
-[!IMPORTANT]
-Make sure to use proxies if you are planing on checking for new listings more frequently!
+> [!IMPORTANT]
+> Make sure to use proxies if you are planing on checking for new listings more frequently!
