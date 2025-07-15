@@ -14,7 +14,7 @@ A messy script which notifies you of new Ebay listings, and sends the listing de
 > [!IMPORTANT]
 > Make sure to use proxies if you are planing on checking for new listings more frequently!
 
-### Adding multiple links to search.
+## Adding multiple links to search.
 
 To add multiple links for the program to look at, format them in the following way:
 `
